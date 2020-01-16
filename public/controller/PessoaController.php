@@ -1,68 +1,86 @@
 <?php
 
-require_once '../config/DB.php'; 
-require_once 'services/PessoaService.php'; 
+require_once '../config/DB.php';
+require_once 'services/PessoaService.php';
+require_once 'helper/Utils.php';
+
+// Inicialização de Variaveis
+$ps = new PessoaService($conn);
+$utils = new Utils();
+$pessoa_list = $ps->index();
+$pessoa = new Pessoa(-1, '', '', '', '');
 
 
-$ps = new PessoaService($conn);  
+if (!isset($_GET['action'])) {
+    $action = '';
+} else {
+    $action = $_GET['action'];
+}
 
+switch ($action) {
 
-$pessoas = $ps->index();
-
-
-switch ($_GET['action']) {
-   
     case 'delete':
-        if(isset($_SESSION)){ 
-            unset($_SESSION);
-        }
-       
-        if(isset($_GET['id']) && is_numeric($_GET['id'])){
-    
-            $id = $_GET['id'];                              
-            
-            if($ps->destroy($id)){
-               $_SESSION['success'] = "Dado foi deletado";
-            }else{
-               $_SESSION['error'] = "Não foi possivel deletar!". $ps->error(); 
-            }
 
-            header("Location: " . "http://" . $_SERVER['HTTP_HOST'] . $location);
-        }else{
+        $utils->limparSessao();
+        
+        if ($id = $utils->validaGetID()) {        
+           
+            if (!$ps->destroy($id)) {
+                $utils->exibeError(`Não foi possivel deletar! $ps->error()`);
+            } else{
+                $utils->exibeSuccess("Registro excluído");
+            }
+                      
+            $utils->redirect();
+
+        } else {
             // set header response code
             http_response_code(404);
-            echo "<h1>404 Page Not Found!</h1>";
+            $utils->notFound();
         }
 
-
         break;
-
-
 
     case 'update':
 
-        if(isset($_SESSION)){ 
-            unset($_SESSION);
-        }
-      
-        break;
+        $utils->limparSessao();
 
+        try {
+            
+            if ($id = $utils->validaGetID()) {  
+                $pessoa = $ps->show($id);
+            } else {
+                $up_pessoa = $ps->popular();
+                $up_pessoa->validar();
+                if ($ps->update($up_pessoa)) {
+                    $utils->exibeSuccess("Registro foi Atualizado");
+                    $utils->redirect();
+                }
+            }
+
+        } catch (Exception $error) {
+            $utils->exibeError($error->getMessage());
+        }
+
+        break;
 
     case 'create':
-        if(isset($_SESSION)){ 
-            unset($_SESSION);
-        }
-        
-        if ($ps->valida()) {
-            if($ps->store())
-            {
-                $_SESSION['success'] = "Dado foi inserido";
+
+        $utils->limparSessao();
+
+        try {
+            $new_pessoa = $ps->popular();
+            $new_pessoa->validar();
+            if ($ps->store($new_pessoa)) {
+                $utils->exibeSuccess("Dados Registrados");
             }
-            header("Location: " . "http://" . $_SERVER['HTTP_HOST'] . $location);
+            $utils->redirect();
+        } catch (Exception $error) {
+            $utils->exibeError($error->getMessage());
         }
-
         break;
-    default:
-   
-}
 
+    default:
+        
+    
+}

@@ -10,17 +10,17 @@
     </tr>
   </thead>
   <tbody> 
-  <?php foreach($pessoas as $pessoa): ?>
+  <?php foreach($pessoa_list as $item): ?>
     <tr>
        
-            <th scope="row"><?php echo $pessoa->getId();  ?></th>
-            <td><?php echo $pessoa->getNome();  ?></td>
-            <td><?php echo $pessoa->getEmail();  ?></td>
-            <td><?php echo $pessoa->getDataNascimento();  ?></td>
-            <td><?php echo $pessoa->getTelefone();  ?></td>
+            <th scope="row"><?php echo $item->id;  ?></th>
+            <td><?php echo $item->nome;  ?></td>
+            <td><?php echo $item->email;  ?></td>
+            <td><?php echo $item->data_nascimento;  ?></td>
+            <td><?php echo $item->telefone;  ?></td>
             <td>
-                <a href="index.php?action=delete&id=<?php echo $pessoa->getId(); ?>"class="btn btn-danger btn-sm" onclick="return confirm('Você tem certeza que deseja excluir?')"><i class="fa fa-trash-o"></i></a>
-                <a href="index.php?action=update&id=<?php echo $pessoa->getId(); ?>"class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
+                <a href="index.php?action=delete&id=<?php echo $item->id; ?>"class="btn btn-danger btn-sm" onclick="return confirm('Você tem certeza que deseja excluir?')"><i class="fa fa-trash-o"></i></a>
+                <a href="index.php?action=update&id=<?php echo $item->id; ?>"class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
             </td>      
      
     </tr>
