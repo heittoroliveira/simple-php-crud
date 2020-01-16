@@ -1,6 +1,6 @@
 # CRUD 
 
-Sistema simples de CRUD feito em PHP com MySQLi sem extenção foi usado na aplicação.
+Sistema simples de CRUD feito em PHP com MySQLi nenhum framework PHP foi usado na aplicação.
   - Bootstrap v4
   - JQuery
 ## Versões
